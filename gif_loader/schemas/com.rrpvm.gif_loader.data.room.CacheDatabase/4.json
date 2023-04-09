@@ -1,0 +1,100 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "e14b466798b8303634d1efd3fc603b0d",
+    "entities": [
+      {
+        "tableName": "gif_models_db",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cache_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `cache_path_uri` TEXT NOT NULL, `cache_version` INTEGER NOT NULL, `cache_size` INTEGER NOT NULL, `cache_data_path` TEXT NOT NULL, `gif_cache_param_id` INTEGER NOT NULL, `gif_frame_count` INTEGER NOT NULL, `gif_frame_rate` INTEGER NOT NULL, `gif_quality` INTEGER NOT NULL, `gif_width` INTEGER NOT NULL, `gif_height` INTEGER NOT NULL, `gif_parameter_hashcode` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "mCacheId",
+            "columnName": "cache_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mName",
+            "columnName": "cache_path_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mVersion",
+            "columnName": "cache_version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mSize",
+            "columnName": "cache_size",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "blobPath",
+            "columnName": "cache_data_path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gifParameters.id",
+            "columnName": "gif_cache_param_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gifParameters.mFrameCount",
+            "columnName": "gif_frame_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gifParameters.mFrameRate",
+            "columnName": "gif_frame_rate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gifParameters.mQuality",
+            "columnName": "gif_quality",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gifParameters.mWidth",
+            "columnName": "gif_width",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gifParameters.mHeight",
+            "columnName": "gif_height",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gifParameters.mHashCode",
+            "columnName": "gif_parameter_hashcode",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "cache_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e14b466798b8303634d1efd3fc603b0d')"
+    ]
+  }
+}

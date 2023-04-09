@@ -1,0 +1,45 @@
+package com.rrpvm.gif_loader.common
+
+import android.content.Context
+import android.graphics.Bitmap
+import android.util.Log
+import com.rrpvm.gif_loader.domain.entity.IGifEncoder
+import com.rrpvm.gif_loader.domain.model.GifParameters
+import com.waynejo.androidndkgif.GifEncoder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+
+
+class NdkGifEncoder(private val context : Context) : IGifEncoder {
+    private val TAG = ":NdkGifEncoder"
+    override suspend fun encodeGif(frames: ArrayList<Bitmap>, config: GifParameters): ByteArray? {
+        val gifEncoder = GifEncoder()
+        val width = frames.getOrNull(0)?.width ?: return null
+        val height = frames.getOrNull(0)?.height ?: return null
+        val file = File(context.filesDir,"TMP.gif")
+        Log.e(TAG,file.path)
+        withContext(Dispatchers.IO) {
+            file.createNewFile()
+        }
+
+        val convertJobTime = System.currentTimeMillis()
+        gifEncoder.init(
+            width,
+            height,
+            file.absolutePath,
+            GifEncoder.EncodingType.ENCODING_TYPE_FAST
+        )
+        var prevJob = System.currentTimeMillis()
+        frames.forEachIndexed { i, it ->
+            gifEncoder.encodeFrame(it, 1000 / config.mFrameRate)
+            Log.e(
+                "$TAG, frame:($i/${frames.size})", (System.currentTimeMillis() - prevJob).toString()
+            )
+            prevJob = System.currentTimeMillis()
+        }
+        Log.e(TAG, (System.currentTimeMillis() - convertJobTime).toString())
+        gifEncoder.close()
+        return file.inputStream().readBytes()
+    }
+}

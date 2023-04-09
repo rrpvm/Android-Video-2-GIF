@@ -1,0 +1,52 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "7cc11267baf3bfecd984f66f5bfb5818",
+    "entities": [
+      {
+        "tableName": "gif_models_db",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cache_path_uri` TEXT NOT NULL, `cache_version` INTEGER NOT NULL, `cache_size` INTEGER NOT NULL, `cache_data` BLOB NOT NULL, PRIMARY KEY(`cache_path_uri`))",
+        "fields": [
+          {
+            "fieldPath": "mName",
+            "columnName": "cache_path_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mVersion",
+            "columnName": "cache_version",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mSize",
+            "columnName": "cache_size",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "blobData",
+            "columnName": "cache_data",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "cache_path_uri"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7cc11267baf3bfecd984f66f5bfb5818')"
+    ]
+  }
+}
