@@ -1,6 +1,7 @@
 package com.rrpvm.gif_loader.data.model
 
 import androidx.room.*
+import com.rrpvm.gif_loader.domain.model.GifCacheDescription
 import com.rrpvm.gif_loader.domain.model.GifModel
 import java.io.File
 
@@ -45,5 +46,15 @@ data class GifCacheModelRoom(
             e.printStackTrace()
         }
         return null
+    }
+
+    fun toDomainDescription(): GifCacheDescription {
+        return GifCacheDescription(
+            mModelId = mCacheId,
+            mOriginSource = mSourcePath,
+            mCacheSize = mSize,
+            mCreatedAt = mCreatedAt,
+            mParamHashcode = mParamHashcode
+        )
     }
 }

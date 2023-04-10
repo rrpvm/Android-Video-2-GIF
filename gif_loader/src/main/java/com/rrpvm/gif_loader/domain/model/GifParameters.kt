@@ -17,6 +17,29 @@ data class GifParameters(
     enum class GifResolution(val maxSize: Int) {
         LOW(240), MEDIUM(320), HIGH(480)
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as GifParameters
+
+        if (mFrameCount != other.mFrameCount) return false
+        if (mFrameRate != other.mFrameRate) return false
+        if (mQuality != other.mQuality) return false
+        if (mResolution != other.mResolution) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = mFrameCount
+        result = 31 * result + mFrameRate
+        result = 31 * result + mQuality
+        result = 31 * result + mResolution.maxSize.hashCode()
+        return result
+    }
+
 }
 
 
