@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class com.rrpvm.gif_loader.domain.*
+-keep class com.rrpvm.gif_loader.common.*
+-keep class com.rrpvm.gif_loader.provider.*
+-keep class * extends androidx.room.RoomDatabase
+-keep class * implements androidx.room.Dao
+-keep class * extends androidx.room.Dao
+-keep @androidx.room.Entity class *
+-dontwarn androidx.room.paging.**

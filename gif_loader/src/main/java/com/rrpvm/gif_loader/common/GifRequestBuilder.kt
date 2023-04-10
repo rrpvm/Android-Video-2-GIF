@@ -10,6 +10,7 @@ import com.rrpvm.gif_loader.domain.repository.IGifCacheRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class GifRequestBuilder(
     private val context: Context,
@@ -75,8 +76,9 @@ class GifRequestBuilder(
             val cache = cacheRepository.getCache(videoGifSource, gifParameters)
             if (cache == null) {
                 //hard-work
-                val gif =
-                    gifWriter.writeVideoToGif(context, videoData, gifParameters) ?: return@launch
+                val gif = withContext(this.coroutineContext + Dispatchers.Default) {
+                    gifWriter.writeVideoToGif(context, videoData, gifParameters)
+                } ?: return@launch
                 val model = GifModel(
                     mGifData = gif,
                     mOriginSource = videoGifSource,
@@ -84,8 +86,11 @@ class GifRequestBuilder(
                     gifParameters.hashCode(),
                     mCreatedAt = System.currentTimeMillis()
                 )
-                cacheRepository.putCache(model)
-                workManager.getJobResource<ByteArray>(jobNameId = jobId).submit(SharedResourceState(gif))
+                this.launch {
+                    cacheRepository.putCache(model)
+                }
+                workManager.getJobResource<ByteArray>(jobNameId = jobId)
+                    .submit(SharedResourceState(gif))
             } else {
                 workManager.getJobResource<ByteArray>(jobNameId = jobId)
                     .submit(SharedResourceState(cache.mGifData))

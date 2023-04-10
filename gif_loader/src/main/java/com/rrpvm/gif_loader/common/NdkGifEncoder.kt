@@ -26,7 +26,7 @@ class NdkGifEncoder(private val context: Context) : IGifEncoder {
         val gifEncoder = GifEncoder()
         val width = frames.getOrNull(0)?.width ?: return null
         val height = frames.getOrNull(0)?.height ?: return null
-        val file = File(context.filesDir, "TMP${Thread.currentThread().name}${WORKER_ID}.gif")
+        val file = File(context.filesDir, "TMP${Thread.currentThread().name}_${WORKER_ID}.gif")
         Log.e(TAG, file.path)
         withContext(Dispatchers.IO) {
             file.createNewFile()

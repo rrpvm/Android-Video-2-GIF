@@ -16,6 +16,13 @@ class GifCacheRoomRepositoryImpl(
     private val context: Context,
 ) : IGifCacheRepository {
     private var toolManager: ICacheToolManager? = null
+
+    override fun getAllCache(): List<GifCacheDescription> {
+        return roomDao.getAllGifCache().map {
+            it.toDomainDescription()
+        }
+    }
+
     override fun putCache(cache: GifModel) {
         try {
             val gifOutput =
@@ -28,13 +35,13 @@ class GifCacheRoomRepositoryImpl(
                 GifCacheModelRoom(
                     mName = cache.mOriginSource,
                     mSourcePath = gifSourcePath,
-                    mSize = gifOutput.totalSpace,
+                    mSize = gifOutput.length(),
                     mVersion = CACHE_DB_VERSION,
                     mParamHashcode = cache.mParamHashcode,
                     mCreatedAt = cache.mCreatedAt
                 )
             )
-            toolManager?.onAddCache(this, gifOutput.totalSpace.toInt())
+            toolManager?.onAddCache(this, gifOutput.length().toInt())
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -50,6 +57,13 @@ class GifCacheRoomRepositoryImpl(
 
     override fun removeCache(cacheList: List<GifCacheDescription>) {
         roomDao.deleteCacheList(cacheList.map { it.mModelId })
+        try {
+            for (cache in cacheList) {
+                File(cache.mLocalPath).delete()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun getCacheList(page: Int, limit: Int): List<GifCacheDescription> =
@@ -57,9 +71,13 @@ class GifCacheRoomRepositoryImpl(
             it.toDomainDescription()
         }
 
+    override fun clearRoomSqlStatement() {
+        roomDao.resetStatement()
+    }
 
     override fun addCacheToolManager(toolManager: ICacheToolManager) {
         this.toolManager = toolManager
         toolManager.onInit(this)
+      //  toolManager.onReset(this)
     }
 }

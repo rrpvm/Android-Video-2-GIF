@@ -25,7 +25,12 @@ class GifLoader private constructor(
     fun withContext(context: Context): GifDataSourceBuilder {
         return GifDataSourceBuilder(
             context,
-            GifCacheRoomRepositoryImpl(RoomProvider.provideCacheDao(context), applicationContext),
+            GifCacheRoomRepositoryImpl(
+                RoomProvider.provideCacheDao(context),
+                applicationContext
+            ).also {
+                it.addCacheToolManager(DefaultCacheManager(applicationContext, cacheSize))
+            },
             workManager = jobManager
         )
     }

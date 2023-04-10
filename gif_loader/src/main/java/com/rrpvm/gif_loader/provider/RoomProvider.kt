@@ -5,7 +5,6 @@ import androidx.room.Room
 import com.rrpvm.gif_loader.data.dao.CacheDbRoomDao
 import com.rrpvm.gif_loader.data.room.CacheDatabase
 
-//TODO: change provider
 object RoomProvider {
     private var cacheDatabase: CacheDatabase? = null
     private fun provideCacheRoomDb(applicationContext: Context): CacheDatabase {

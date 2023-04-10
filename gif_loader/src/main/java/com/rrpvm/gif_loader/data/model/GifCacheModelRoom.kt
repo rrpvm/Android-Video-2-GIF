@@ -1,11 +1,13 @@
 package com.rrpvm.gif_loader.data.model
 
+import androidx.annotation.Keep
 import androidx.room.*
 import com.rrpvm.gif_loader.domain.model.GifCacheDescription
 import com.rrpvm.gif_loader.domain.model.GifModel
 import java.io.File
 
-@Entity(tableName = "gif_models_db")
+@Keep
+@Entity(tableName = DB_NAME)
 data class GifCacheModelRoom(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "cache_id") val mCacheId: Long,
@@ -51,10 +53,14 @@ data class GifCacheModelRoom(
     fun toDomainDescription(): GifCacheDescription {
         return GifCacheDescription(
             mModelId = mCacheId,
-            mOriginSource = mSourcePath,
+            mLocalPath = mSourcePath,
+            mOrigin = mSourcePath,
             mCacheSize = mSize,
             mCreatedAt = mCreatedAt,
             mParamHashcode = mParamHashcode
         )
     }
 }
+
+@Keep
+private const val DB_NAME = "gif_models_db"

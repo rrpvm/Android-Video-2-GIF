@@ -27,7 +27,6 @@ data class GifModel(
         result = 31 * result + mOriginSource.hashCode()
         result = 31 * result + (mCacheSize % Integer.MAX_VALUE).toInt()
         result = 31 * result + mParamHashcode
-        result = 31 * result + mCreatedAt.hashCode()
         return result
     }
 

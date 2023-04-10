@@ -15,7 +15,7 @@ data class GifParameters(
     val mResolution: GifResolution = GifResolution.LOW
 ) {
     enum class GifResolution(val maxSize: Int) {
-        LOW(240), MEDIUM(320), HIGH(480)
+        LOW(144), MEDIUM(260), HIGH(360)
     }
 
     override fun equals(other: Any?): Boolean {
