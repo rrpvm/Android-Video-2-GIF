@@ -4,13 +4,12 @@ import android.content.Context
 import android.util.Log
 import com.rrpvm.gif_loader.domain.entity.IGifDataSource
 import com.rrpvm.gif_loader.domain.entity.IGifModelWriter
+import com.rrpvm.gif_loader.domain.entity.SharedResourceState
+import com.rrpvm.gif_loader.domain.entity.SharedResourceSubscriber
 import com.rrpvm.gif_loader.domain.model.GifModel
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import com.rrpvm.gif_loader.domain.repository.IGifCacheRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class GifRequestBuilder(
     private val context: Context,
@@ -100,7 +99,26 @@ class GifRequestBuilder(
         workManager.onJobStart(jobId, fetchJob)
         workManager.getJobResource<ByteArray>(jobId).addObserver(result)
     }
-    /*fun load(): ByteArray? {
 
-    }*/
+    suspend fun load(): ByteArray? {
+        val videoData = gifVideoSourceRetriever.getVideoSource() ?: return null
+        val cache = cacheRepository.getCache(videoGifSource, gifParameters)
+        if (cache == null) {
+            val gif = gifWriter.writeVideoToGif(context, videoData, gifParameters)
+                ?: return null
+            val model = GifModel(
+                mGifData = gif,
+                mOriginSource = videoGifSource,
+                gif.size.toLong(),
+                gifParameters.hashCode(),
+                mCreatedAt = System.currentTimeMillis()
+            )
+            coroutineScope {
+                this.launch { cacheRepository.putCache(model) }
+            }
+            return gif
+        } else {
+            return cache.mGifData
+        }
+    }
 }

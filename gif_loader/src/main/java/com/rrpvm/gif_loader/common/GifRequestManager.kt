@@ -9,7 +9,7 @@ class GifRequestManager {
 
     fun <T> getJobResource(jobNameId: String): SharedResource<T> {
         return if (rsMap[jobNameId] == null) {
-            val resource = SharedResource<T>(null)
+            val resource = SharedResource<T>()
             rsMap[jobNameId] = resource as SharedResource<Any>
             resource
         } else rsMap[jobNameId]!! as SharedResource<T>

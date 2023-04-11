@@ -13,6 +13,5 @@ interface IGifCacheRepository {
     fun removeCache(cacheList: List<GifCacheDescription>)
     fun getCacheList(page: Int, limit: Int): List<GifCacheDescription>
     fun addCacheToolManager(toolManager: ICacheToolManager)
-
     fun clearRoomSqlStatement()
 }

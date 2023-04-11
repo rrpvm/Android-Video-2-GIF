@@ -1,20 +1,13 @@
 package com.rrpvm.gif_loader.common
 
+import com.rrpvm.gif_loader.domain.entity.SharedResourceState
+import com.rrpvm.gif_loader.domain.entity.SharedResourceSubscriber
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class SharedResourceState<T>(
-    val state: T? = null
-)
-
-abstract class SharedResourceSubscriber<T> {
-    abstract fun onResourceSuccess(data: T)
-    abstract fun onResourceFailed()
-}
-
 class SharedResource<T>(
-    var state: SharedResourceState<T>? = null
 ) {
+    var state: SharedResourceState<T>? = null
     private val observers = mutableListOf<SharedResourceSubscriber<T>>()
     suspend fun submit(state: SharedResourceState<T>) {
         this.state = state

@@ -77,7 +77,6 @@ class GifCacheRoomRepositoryImpl(
 
     override fun addCacheToolManager(toolManager: ICacheToolManager) {
         this.toolManager = toolManager
-        toolManager.onInit(this)
       //  toolManager.onReset(this)
     }
 }

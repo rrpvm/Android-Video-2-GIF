@@ -8,10 +8,12 @@ import com.rrpvm.gif_loader.data.room.CacheDatabase
 object RoomProvider {
     private var cacheDatabase: CacheDatabase? = null
     private fun provideCacheRoomDb(applicationContext: Context): CacheDatabase {
-        cacheDatabase =
-            Room.databaseBuilder(applicationContext, CacheDatabase::class.java, CACHE_DB_NAME)
-                .fallbackToDestructiveMigration()
-                .build()
+        synchronized(this) {
+            cacheDatabase =
+                Room.databaseBuilder(applicationContext, CacheDatabase::class.java, CACHE_DB_NAME)
+                    .fallbackToDestructiveMigration()
+                    .build()
+        }
         return cacheDatabase ?: throw RuntimeException("can't create a Room db")
     }
 
@@ -19,8 +21,10 @@ object RoomProvider {
 
     fun provideCacheDao(applicationContext: Context): CacheDbRoomDao {
         return dbCacheDao ?: run {
-            dbCacheDao = cacheDatabase?.getCacheDao()
-                ?: provideCacheRoomDb(applicationContext).getCacheDao()
+            synchronized(this){
+                dbCacheDao = cacheDatabase?.getCacheDao()
+                    ?: provideCacheRoomDb(applicationContext).getCacheDao()
+            }
             return@run dbCacheDao
                 ?: throw RuntimeException("Error in creating DAO")
         }

@@ -12,26 +12,21 @@ import java.io.File
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
-private const val TAG = ":DefaultCacheManager"
 
+//avoid context store
 class DefaultCacheManager(
-    private val context: Context,
+    context: Context,
     private val cacheSizeCapacity: Int,
-    private val cacheSelector: ICacheSelector = DefaultCacheSelector()
+    private val cacheSelector: ICacheSelector,
 ) : ICacheToolManager {
     private val file: File = File(context.cacheDir, DEFAULT_FILE_NAME)
-
-    companion object {
-        private val cacheData: CacheData = CacheData(0)
-    }
-
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     override fun onAddCache(repo: IGifCacheRepository, cacheSize: Int) {
         try {
             val length = ObjectInputStream(file.inputStream()).use { it.readObject() } as CacheData
             var extraSize = length.cacheSize + cacheSize - cacheSizeCapacity
             while (extraSize > 0) {
-                val cacheToDelete = cacheSelector.getCacheForDelete(repo)?.let {
+                cacheSelector.getCacheForDelete(repo)?.let {
                     repo.removeCache(listOf(it))
                     extraSize -= it.mCacheSize.toInt()
                 }
@@ -83,7 +78,12 @@ class DefaultCacheManager(
     private fun saveActualCacheSize() {
         ObjectOutputStream(file.outputStream()).writeObject(cacheData)
     }
+
+    companion object {
+        private val cacheData: CacheData = CacheData(0)
+    }
 }
 
 const val DEFAULT_CACHE_SIZE_CAPACITY = 1024 * 1024 * 1024 //1Gb, 1kb->1mb->1gb
 private const val DEFAULT_FILE_NAME = "DEFAULT_CACHE_CONTROL.txt"
+private const val TAG = ":DefaultCacheManager"
