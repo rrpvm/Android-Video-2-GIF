@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="olegchebatkov"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fitsSystemWindows="true"
+            android:fillViewport="true"
+            android:scrollIndicators="none"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+                <HorizontalScrollView
+                    android:id="@+id/horizontalView"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:scrollIndicators="none"
+                    android:scrollbars="none"
+                  >
+                    <TableLayout
+                        android:id="@+id/tableLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp">
+
+                        <TableRow
+                            android:layout_width="wrap_content"
+                            android:layout_height="150dp">
+
+                            <TextView android:text="Кол-во\nподписчиков" />
+
+                            <TextView android:text="Кол-во\nподписчиков (реф.)" />
+
+                            <TextView android:text="Объем\nконтента" />
+
+                            <TextView android:text="Кол-во\nподписчиков (реф.)" />
+
+                            <TextView android:text="Объем\nконтента" />
+
+                            <TextView android:text="Реакции" />
+
+                            <TextView android:text="Equal index" />
+                        </TableRow>
+
+                        <TableRow
+                            android:layout_width="150dp"
+                            android:layout_height="150dp">
+                            <TextView android:text="2" />
+                        </TableRow>
+                    </TableLayout>
+                </HorizontalScrollView>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </Space>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+</LinearLayout>

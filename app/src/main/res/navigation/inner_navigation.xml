@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav"
+    app:startDestination="@id/welcome_fragment">
+    <fragment
+        android:id="@+id/welcome_fragment"
+        android:name="com.rrpvm.testapp.FirstFragment">
+        <action
+            android:id="@+id/action1"
+            app:destination="@id/main_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/main_fragment"
+        android:name="com.rrpvm.testapp.MainFragment" />
+    <include app:graph="@navigation/fragment_nav" />
+</navigation>
