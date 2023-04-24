@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("maven-publish")
 }
 
 android {
@@ -53,5 +54,31 @@ dependencies {
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
 
-    implementation ("io.github.waynejo:androidndkgif:1.0.1")
+    implementation("io.github.waynejo:androidndkgif:1.0.1")
 }
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = "com.rrpvm"
+                artifactId = "gif_loader"
+                version = "1.0.3"
+
+                from(components["release"])
+            }
+        }
+    }
+}
+/*
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components["release"]
+                groupId = 'com.rrpvm'
+                artifactId = 'gif_loader'
+                version = '1.0.3'
+            }
+        }
+    }
+}*/
