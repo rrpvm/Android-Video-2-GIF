@@ -8,4 +8,8 @@ interface IVideoFramesRetriever {
         source : File,
         frames: Int,
     ): ArrayList<Bitmap>?
+    suspend fun getVideoFramesInTime(
+        source : File,
+        millisToTakeForVideo: Int,
+    ): ArrayList<Bitmap>?
 }

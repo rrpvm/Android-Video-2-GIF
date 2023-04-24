@@ -2,10 +2,8 @@ package com.rrpvm.gif_loader.common
 
 import android.content.Context
 import android.util.Log
-import com.rrpvm.gif_loader.domain.entity.IGifDataSource
-import com.rrpvm.gif_loader.domain.entity.IGifModelWriter
-import com.rrpvm.gif_loader.domain.entity.SharedResourceState
-import com.rrpvm.gif_loader.domain.entity.SharedResourceSubscriber
+import com.rrpvm.gif_loader.common.gif_encoder.NdkGifEncoder
+import com.rrpvm.gif_loader.domain.entity.*
 import com.rrpvm.gif_loader.domain.model.GifModel
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import com.rrpvm.gif_loader.domain.repository.IGifCacheRepository
@@ -21,8 +19,18 @@ class GifRequestBuilder(
 ) {
     private var gifParameters: GifParameters = GifParameters()
     private var cacheStrategy: Boolean = true
-    fun setParameters(params: GifParameters) {
-        gifParameters = params
+    private var onError: IResourceErrorEvent? = null
+
+    fun setOnErrorHandler(handler: IResourceErrorEvent): GifRequestBuilder {
+        return this.apply {
+            onError = handler
+        }
+    }
+
+    fun setParameters(params: GifParameters): GifRequestBuilder {
+        return this.apply {
+            gifParameters = params
+        }
     }
 
     fun setResolution(res: GifParameters.GifResolution): GifRequestBuilder {
@@ -53,6 +61,12 @@ class GifRequestBuilder(
         }
     }
 
+    fun setVideoGifDuration(durationMs: Int): GifRequestBuilder {
+        return this.apply {
+            this.gifParameters = gifParameters.copy(mGifTime = durationMs)
+        }
+    }
+
     fun setCaching(isCaching: Boolean): GifRequestBuilder {
         return this.apply {
             cacheStrategy = isCaching
@@ -71,35 +85,40 @@ class GifRequestBuilder(
         }
         val jobId = "${videoGifSource}_${gifParameters.hashCode()}"
         val fetchJob = CoroutineScope(Dispatchers.IO).launch {
-            val videoData = gifVideoSourceRetriever.getVideoSource() ?: return@launch
-            val cache = cacheRepository.getCache(videoGifSource, gifParameters)
-            if (cache == null) {
-                //hard-work
-                val gif = withContext(this.coroutineContext + Dispatchers.Default) {
-                    gifWriter.writeVideoToGif(context, videoData, gifParameters)
-                } ?: return@launch
-                val model = GifModel(
-                    mGifData = gif,
-                    mOriginSource = videoGifSource,
-                    gif.size.toLong(),
-                    gifParameters.hashCode(),
-                    mCreatedAt = System.currentTimeMillis()
-                )
-                this.launch {
-                    cacheRepository.putCache(model)
+            try {
+                val videoData = gifVideoSourceRetriever.getVideoSource() ?: return@launch
+                val cache = cacheRepository.getCache(videoGifSource, gifParameters)
+                if (cache == null) {
+                    //hard-work
+                    val gif = withContext(this.coroutineContext + Dispatchers.Default) {
+                        gifWriter.writeVideoToGif(context, videoData, gifParameters)
+                    } ?: return@launch
+                    val model = GifModel(
+                        mGifData = gif,
+                        mOriginSource = videoGifSource,
+                        gif.size.toLong(),
+                        gifParameters.hashCode(),
+                        mCreatedAt = System.currentTimeMillis()
+                    )
+                    this.launch {
+                        cacheRepository.putCache(model)
+                    }
+                    workManager.getJobResource<ByteArray>(jobNameId = jobId)
+                        .submit(SharedResourceState(gif))
+                } else {
+                    workManager.getJobResource<ByteArray>(jobNameId = jobId)
+                        .submit(SharedResourceState(cache.mGifData))
                 }
-                workManager.getJobResource<ByteArray>(jobNameId = jobId)
-                    .submit(SharedResourceState(gif))
-            } else {
-                workManager.getJobResource<ByteArray>(jobNameId = jobId)
-                    .submit(SharedResourceState(cache.mGifData))
+                workManager.onJobFinal(videoGifSource)
+            } catch (exception: Exception) {
+                onError?.onResourceLoadError(exception)
+                return@launch
             }
-            workManager.onJobFinal(videoGifSource)
         }
         workManager.onJobStart(jobId, fetchJob)
         workManager.getJobResource<ByteArray>(jobId).addObserver(result)
     }
-
+/*
     suspend fun load(): ByteArray? {
         val videoData = gifVideoSourceRetriever.getVideoSource() ?: return null
         val cache = cacheRepository.getCache(videoGifSource, gifParameters)
@@ -120,5 +139,5 @@ class GifRequestBuilder(
         } else {
             return cache.mGifData
         }
-    }
+    }*/
 }

@@ -21,8 +21,10 @@ class DefaultGifWriter(
     ): ByteArray? {
         val tmpFile = File(context.cacheDir, "${UUID.nameUUIDFromBytes(pVideoData)}_tmp")
         DataOutputStream(tmpFile.outputStream()).use { it.write(pVideoData) }
-        val framesArray = videoFramesRetriever.getVideoFrames(tmpFile, params.mFrameCount)
-            ?: return null
+        val framesArray = params.mGifTime?.let {
+            videoFramesRetriever.getVideoFramesInTime(tmpFile, it)
+        } ?: videoFramesRetriever.getVideoFrames(tmpFile, params.mFrameCount) ?: return null
+
         val processedFrames = framesArray.map {
             videoPostProcessor.convert(it, params.mResolution)
         }

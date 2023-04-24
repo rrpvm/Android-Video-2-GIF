@@ -7,12 +7,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import com.bumptech.glide.Glide
+import com.rrpvm.gif_loader.GifLoader
+import com.rrpvm.gif_loader.domain.model.GifParameters
 import com.rrpvm.testapp.databinding.ActivityMainBinding
 
-
 class MainActivity : AppCompatActivity() {
-    private val viewmodel: MainViewModel by viewModels()
-
     @SuppressLint("MissingSuperCall")
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -27,29 +27,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if (intent.data != null) {
-            //check valid
 
-            /* val intent = NavDeepLinkBuilder(this)
-                 .setGraph(R.navigation.main_nav)
-                 .setDestination(R.id.fragment_nav)
-                 .setComponentName(this.componentName)
-                 .createPendingIntent()
-             intent.send()*/
-            val navHostFragment =
-                supportFragmentManager.findFragmentById(R.id.fcv) as NavHostFragment
-            val navController = navHostFragment.navController
-              navController.setGraph(R.navigation.fragment_nav)
-            // navController.handleDeepLink(intent)
-            // findNavController(R.id.main_nav).setGraph(R.navigation.main_nav)
-
-        }
-
-        /* lifecycleScope.launch {
-             delay(2000L)
-             val navController = findNavController(R.id.fcv)
-             navController.navigate(FirstFragmentDirections.action1())
-         }*/
+        GifLoader.withContext(binding.mainGif.context)
+            .from("https://sw.trackercracker.ru/upload/task/63ff266c8f3bd79ee8bf899c/document_5201954330378249996.mp4")
+            .setResolution(GifParameters.GifResolution.MEDIUM)
+            .setFrameCount(40)
+            .setFrameRate(30)
+            .loadInto {
+                Glide.with(binding.mainGif.context).load(it).fitCenter()
+                    .into(binding.mainGif)
+            }
     }
 
 }

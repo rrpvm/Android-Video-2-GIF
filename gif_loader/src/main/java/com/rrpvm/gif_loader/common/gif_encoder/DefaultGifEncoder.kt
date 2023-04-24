@@ -1,4 +1,4 @@
-package com.rrpvm.gif_loader.common
+package com.rrpvm.gif_loader.common.gif_encoder
 
 import android.graphics.Bitmap
 import android.util.Log
@@ -6,7 +6,6 @@ import com.rrpvm.gif_loader.domain.entity.IGifEncoder
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import com.rrpvm.gif_loader.domain.utillities.AnimatedGifEncoder
 import java.io.ByteArrayOutputStream
-import java.io.File
 
 class DefaultGifEncoder : IGifEncoder {
     private val TAG = ":DefaultGifEncoder"

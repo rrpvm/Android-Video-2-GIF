@@ -12,7 +12,8 @@ data class GifParameters(
     val mFrameCount: Int = 48,//2s
     val mFrameRate: Int = 24,//24 fps
     @androidx.annotation.IntRange(from = 1, to = 20) val mQuality: Int = 5,
-    val mResolution: GifResolution = GifResolution.LOW
+    val mResolution: GifResolution = GifResolution.LOW,
+    val mGifTime: Int? = null,
 ) {
     enum class GifResolution(val maxSize: Int) {
         LOW(144), MEDIUM(260), HIGH(360)
@@ -36,6 +37,9 @@ data class GifParameters(
         var result = mFrameCount
         result = 31 * result + mFrameRate
         result = 31 * result + mQuality
+        mGifTime?.run {
+            result = 31 * result + this
+        }
         result = 31 * result + mResolution.maxSize.hashCode()
         return result
     }

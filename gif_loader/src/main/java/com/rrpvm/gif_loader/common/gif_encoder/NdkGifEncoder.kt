@@ -1,4 +1,4 @@
-package com.rrpvm.gif_loader.common
+package com.rrpvm.gif_loader.common.gif_encoder
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -10,10 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
+private const val TAG = ":NdkGifEncoder"
 
 class NdkGifEncoder(private val context: Context) : IGifEncoder {
-    private val TAG = ":NdkGifEncoder"
-
     companion object {
         @Volatile
         private var WORKER_ID = 0
@@ -26,7 +25,7 @@ class NdkGifEncoder(private val context: Context) : IGifEncoder {
         val gifEncoder = GifEncoder()
         val width = frames.getOrNull(0)?.width ?: return null
         val height = frames.getOrNull(0)?.height ?: return null
-        val file = File(context.filesDir, "TMP${Thread.currentThread().name}_${WORKER_ID}.gif")
+        val file = File(context.filesDir, "TMP${Thread.currentThread().name}_$WORKER_ID.gif")
         Log.e(TAG, file.path)
         withContext(Dispatchers.IO) {
             file.createNewFile()
