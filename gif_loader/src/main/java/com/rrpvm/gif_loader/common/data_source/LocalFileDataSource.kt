@@ -6,7 +6,7 @@ import java.io.File
 import java.io.IOException
 
 class LocalFileDataSource(private val path: String) : IGifDataSource {
-    @kotlin.jvm.Throws(IOException::class)
+    @kotlin.jvm.Throws(IOException::class, NullPointerException::class)
     override fun getVideoSource(cacheStrategy: GifLoaderRequestCacheStrategy): ByteArray {
         return File(path).inputStream().use { input ->
             return@use input.readBytes()
