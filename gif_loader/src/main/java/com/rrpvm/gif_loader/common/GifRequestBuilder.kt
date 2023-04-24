@@ -18,7 +18,8 @@ class GifRequestBuilder(
     private val workManager: GifRequestManager,
 ) {
     private var gifParameters: GifParameters = GifParameters()
-    private var cacheStrategy: Boolean = true
+    private var cacheStrategy: GifLoaderRequestCacheStrategy =
+        GifLoaderRequestCacheStrategy.CACHE_ONLY_GIF
     private var onError: IResourceErrorEvent? = null
 
     fun setOnErrorHandler(handler: IResourceErrorEvent): GifRequestBuilder {
@@ -67,7 +68,7 @@ class GifRequestBuilder(
         }
     }
 
-    fun setCaching(isCaching: Boolean): GifRequestBuilder {
+    fun setCaching(isCaching: GifLoaderRequestCacheStrategy): GifRequestBuilder {
         return this.apply {
             cacheStrategy = isCaching
         }
@@ -86,9 +87,10 @@ class GifRequestBuilder(
         val jobId = "${videoGifSource}_${gifParameters.hashCode()}"
         val fetchJob = CoroutineScope(Dispatchers.IO).launch {
             try {
-                val videoData = gifVideoSourceRetriever.getVideoSource() ?: return@launch
+                val videoData =
+                    gifVideoSourceRetriever.getVideoSource(cacheStrategy) ?: return@launch
                 val cache = cacheRepository.getCache(videoGifSource, gifParameters)
-                if (cache == null) {
+                if (cache == null || isNeedFullLoad()) {
                     //hard-work
                     val gif = withContext(this.coroutineContext + Dispatchers.Default) {
                         gifWriter.writeVideoToGif(context, videoData, gifParameters)
@@ -117,6 +119,10 @@ class GifRequestBuilder(
         }
         workManager.onJobStart(jobId, fetchJob)
         workManager.getJobResource<ByteArray>(jobId).addObserver(result)
+    }
+
+    private fun isNeedFullLoad(): Boolean {
+        return cacheStrategy == GifLoaderRequestCacheStrategy.NO_CACHE || cacheStrategy == GifLoaderRequestCacheStrategy.CACHE_ONLY_SOURCE
     }
 /*
     suspend fun load(): ByteArray? {

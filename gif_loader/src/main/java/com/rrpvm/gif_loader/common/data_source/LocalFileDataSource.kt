@@ -2,14 +2,13 @@ package com.rrpvm.gif_loader.common.data_source
 
 import com.rrpvm.gif_loader.domain.entity.GifLoaderRequestCacheStrategy
 import com.rrpvm.gif_loader.domain.entity.IGifDataSource
+import java.io.File
 import java.io.IOException
-import java.net.MalformedURLException
-import java.net.URL
 
-class HttpDataSource(private val url: String) : IGifDataSource {
-    @kotlin.jvm.Throws(IOException::class, MalformedURLException::class, Exception::class)
+class LocalFileDataSource(private val path: String) : IGifDataSource {
+    @kotlin.jvm.Throws(IOException::class)
     override fun getVideoSource(cacheStrategy: GifLoaderRequestCacheStrategy): ByteArray {
-        return URL(url).openStream().use { input ->
+        return File(path).inputStream().use { input ->
             return@use input.readBytes()
         }
     }

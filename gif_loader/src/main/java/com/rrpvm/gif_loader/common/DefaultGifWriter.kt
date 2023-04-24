@@ -4,7 +4,7 @@ import android.content.Context
 
 import com.rrpvm.gif_loader.domain.entity.IGifEncoder
 import com.rrpvm.gif_loader.domain.entity.IGifModelWriter
-import com.rrpvm.gif_loader.domain.entity.IVVideoFramesPostProcessor
+import com.rrpvm.gif_loader.domain.entity.IVideoFramesPostProcessor
 import com.rrpvm.gif_loader.domain.entity.IVideoFramesRetriever
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import java.io.DataOutputStream
@@ -13,7 +13,7 @@ import java.util.*
 
 class DefaultGifWriter(
     private val videoFramesRetriever: IVideoFramesRetriever = DefaultVideoFramesRetriever(),
-    private val videoPostProcessor: IVVideoFramesPostProcessor = DefaultFramesPostProcessor(),
+    private val videoPostProcessor: IVideoFramesPostProcessor = DefaultFramesPostProcessor(),
     private val gifEncoder: IGifEncoder,
 ) : IGifModelWriter {
     override suspend fun writeVideoToGif(
