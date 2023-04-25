@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.util.Log
 import com.rrpvm.gif_loader.domain.entity.IVideoFramesRetriever
-import wseemann.media.FFmpegMediaMetadataRetriever
+//import wseemann.media.FFmpegMediaMetadataRetriever
 import java.io.File
 
 class DefaultVideoFramesRetriever : IVideoFramesRetriever {
@@ -44,17 +44,21 @@ class DefaultVideoFramesRetriever : IVideoFramesRetriever {
     ): ArrayList<Bitmap>? {
         return kotlin.runCatching {
             val start = System.currentTimeMillis()
-            val ffmpeg = FFmpegMediaMetadataRetriever().apply {
-                this.setDataSource(source.path)
+            val ffmpeg = MediaMetadataRetriever().apply {
+                setDataSource(source.path)
             }
+           /* val ffmpeg = FFmpegMediaMetadataRetriever().apply {
+                this.setDataSource(source.path)
+            }*/
             val pStep = 30
             val uniqueFrames = mutableSetOf<Bitmap>()
             for (time in 0..millisToTakeForVideo * 1000 step pStep * 1000) {
                 uniqueFrames.add(
                     ffmpeg.getFrameAtTime(
                         time.toLong(),
-                        FFmpegMediaMetadataRetriever.OPTION_CLOSEST
-                    )
+                        MediaMetadataRetriever.OPTION_CLOSEST
+                      //  FFmpegMediaMetadataRetriever.OPTION_CLOSEST
+                    ) ?: continue
                 )
             }
             val end = System.currentTimeMillis()
