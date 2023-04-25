@@ -7,6 +7,7 @@ package com.rrpvm.gif_loader.domain.model
  * mQuality - quality of colors in generated gif, range : 1-20, where 20 the best
  * mWidth - the width of the output
  * mHeight - the height of the output
+ * mGifTime - duration of video part taken
  * **/
 data class GifParameters(
     val mFrameCount: Int = 48,//2s
@@ -16,7 +17,8 @@ data class GifParameters(
     val mGifTime: Int? = null,
 ) {
     enum class GifResolution(val maxSize: Int) {
-        LOW(144), MEDIUM(260), HIGH(360)
+        LOW(144), MEDIUM(260), HIGH(360), ULTRA(720)
+        //ultra - super high resolution for gif, no sense
     }
 
     override fun equals(other: Any?): Boolean {
@@ -28,6 +30,7 @@ data class GifParameters(
         if (mFrameCount != other.mFrameCount) return false
         if (mFrameRate != other.mFrameRate) return false
         if (mQuality != other.mQuality) return false
+        if (mGifTime != other.mGifTime) return false
         if (mResolution != other.mResolution) return false
 
         return true

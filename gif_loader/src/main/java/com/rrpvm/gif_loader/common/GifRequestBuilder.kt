@@ -3,6 +3,7 @@ package com.rrpvm.gif_loader.common
 import android.content.Context
 import android.util.Log
 import com.rrpvm.gif_loader.common.gif_encoder.NdkGifEncoder
+import com.rrpvm.gif_loader.common.gif_writer.DefaultGifWriter
 import com.rrpvm.gif_loader.domain.entity.*
 import com.rrpvm.gif_loader.domain.model.GifModel
 import com.rrpvm.gif_loader.domain.model.GifParameters
@@ -13,14 +14,19 @@ class GifRequestBuilder(
     private val context: Context,
     private val videoGifSource: String,
     private val gifVideoSourceRetriever: IGifDataSource,
-    private val gifWriter: IGifModelWriter = DefaultGifWriter(gifEncoder = NdkGifEncoder(context)),
     private val cacheRepository: IGifCacheRepository,
     private val workManager: GifRequestManager,
 ) {
+    private var gifWriter: IGifModelWriter = DefaultGifWriter(gifEncoder = NdkGifEncoder(context))
     private var gifParameters: GifParameters = GifParameters()
     private var cacheStrategy: GifLoaderRequestCacheStrategy =
         GifLoaderRequestCacheStrategy.CACHE_ONLY_GIF
     private var onError: IResourceErrorEvent? = null
+    fun setGifWriter(writer: IGifModelWriter): GifRequestBuilder {
+        return this.apply {
+            gifWriter = writer
+        }
+    }
 
     fun setOnErrorHandler(handler: IResourceErrorEvent): GifRequestBuilder {
         return this.apply {

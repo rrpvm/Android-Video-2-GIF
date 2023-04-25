@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.rrpvm.gif_loader.GifLoader
+import com.rrpvm.gif_loader.common.gif_encoder.NdkGifEncoder
+import com.rrpvm.gif_loader.common.gif_writer.CircularReverseGifWriter
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import com.rrpvm.testapp.databinding.ActivityMainBinding
 
@@ -15,10 +17,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         GifLoader.withContext(binding.mainGif.context)
-            .fromLocal("https://sw.trackercracker.ru/upload/task/63ff266c8f3bd79ee8bf899c/document_5201954330378249996.mp4")
+            .from("https://sw.trackercracker.ru/upload/task/63ff266c8f3bd79ee8bf899c/document_5201954330378249996.mp4")
             .setResolution(GifParameters.GifResolution.MEDIUM)
             .setFrameCount(40)
             .setFrameRate(30)
+            .setGifWriter(CircularReverseGifWriter(gifEncoder = NdkGifEncoder(binding.mainGif.context)))
             .loadInto {
                 Glide.with(binding.mainGif.context).load(it).fitCenter()
                     .into(binding.mainGif)

@@ -1,6 +1,8 @@
-package com.rrpvm.gif_loader.common
+package com.rrpvm.gif_loader.common.gif_writer
 
 import android.content.Context
+import com.rrpvm.gif_loader.common.DefaultFramesPostProcessor
+import com.rrpvm.gif_loader.common.DefaultVideoFramesRetriever
 
 import com.rrpvm.gif_loader.domain.entity.IGifEncoder
 import com.rrpvm.gif_loader.domain.entity.IGifModelWriter
