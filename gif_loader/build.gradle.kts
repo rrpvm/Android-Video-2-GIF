@@ -11,8 +11,11 @@ android {
 
     defaultConfig {
 
-        minSdk = 28 as Int
-        targetSdk = compileSdk
+        minSdk = 28
+        targetSdk = 33
+
+
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         ksp {
@@ -46,11 +49,11 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
 
-    implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-core:1.0.19")
-    implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native-armeabi-v7a:1.0.19")
-    implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native-x86:1.0.19")
-    implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native-x86_64:1.0.19")
-    implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native-arm64-v8a:1.0.19")
+    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever-core:1.0.19")
+    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever-native-armeabi-v7a:1.0.19")
+    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever-native-x86:1.0.19")
+    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever-native-x86_64:1.0.19")
+    implementation("com.github.wseemann:FFmpegMediaMetadataRetriever-native-arm64-v8a:1.0.19")
 
 
     implementation("androidx.room:room-runtime:$room_version")
@@ -71,7 +74,7 @@ afterEvaluate {
             create<MavenPublication>("maven") {
                 groupId = "com.rrpvm"
                 artifactId = "gif_loader"
-                version = "1.0.7"
+                version = "1.0.8"
 
                 from(components["release"])
             }
