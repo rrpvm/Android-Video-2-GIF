@@ -23,7 +23,6 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -49,10 +48,6 @@ dependencies {
 
 
     implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-core:1.0.19")
-
-
-
-    implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-core:1.0.19")
     implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native-armeabi-v7a:1.0.19")
     implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native-x86:1.0.19")
     implementation ("com.github.wseemann:FFmpegMediaMetadataRetriever-native-x86_64:1.0.19")
@@ -74,7 +69,7 @@ afterEvaluate {
             create<MavenPublication>("maven") {
                 groupId = "com.rrpvm"
                 artifactId = "gif_loader"
-                version = "1.0.4"
+                version = "1.0.7"
 
                 from(components["release"])
             }
