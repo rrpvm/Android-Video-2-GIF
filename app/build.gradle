@@ -10,17 +10,18 @@ android {
 
     defaultConfig {
         applicationId "com.rrpvm.testapp"
-        minSdk 28
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-    buildFeatures {
-        viewBinding = true
+        buildFeatures{
+            viewBinding = true
+        }
     }
     buildTypes {
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
