@@ -2,12 +2,16 @@ package com.rrpvm.gif_loader.common
 
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.rrpvm.gif_loader.domain.entity.IVideoFramesRetriever
 //import wseemann.media.FFmpegMediaMetadataRetriever
 import java.io.File
 
 class DefaultVideoFramesRetriever : IVideoFramesRetriever {
+
+    @RequiresApi(Build.VERSION_CODES.P)
     override suspend fun getVideoFrames(
         source: File,
         frames: Int,
@@ -47,9 +51,9 @@ class DefaultVideoFramesRetriever : IVideoFramesRetriever {
             val ffmpeg = MediaMetadataRetriever().apply {
                 setDataSource(source.path)
             }
-           /* val ffmpeg = FFmpegMediaMetadataRetriever().apply {
-                this.setDataSource(source.path)
-            }*/
+            /* val ffmpeg = FFmpegMediaMetadataRetriever().apply {
+                 this.setDataSource(source.path)
+             }*/
             val pStep = 30
             val uniqueFrames = mutableSetOf<Bitmap>()
             for (time in 0..millisToTakeForVideo * 1000 step pStep * 1000) {
@@ -57,7 +61,7 @@ class DefaultVideoFramesRetriever : IVideoFramesRetriever {
                     ffmpeg.getFrameAtTime(
                         time.toLong(),
                         MediaMetadataRetriever.OPTION_CLOSEST
-                      //  FFmpegMediaMetadataRetriever.OPTION_CLOSEST
+                        //  FFmpegMediaMetadataRetriever.OPTION_CLOSEST
                     ) ?: continue
                 )
             }
