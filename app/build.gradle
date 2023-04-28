@@ -61,6 +61,10 @@ afterEvaluate {
                 version = "1.0.8"
 
                 from(components["release_apk"])
+
+               pom {
+                   description = "created by rrpvm(Roman Parkhomenko), free open-source lib, but it\' only mine product"
+               }
             }
         }
     }
