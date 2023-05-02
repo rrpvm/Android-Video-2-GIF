@@ -15,7 +15,7 @@ private const val TAG = ":NdkGifEncoder"
 class NdkGifEncoder(private val context: Context) : IGifEncoder {
     companion object {
         @Volatile
-        private var WORKER_ID = 0
+        private var WORKER_ID = 0L
     }
 
     override suspend fun encodeGif(frames: ArrayList<Bitmap>, config: GifParameters): ByteArray? {
@@ -30,7 +30,6 @@ class NdkGifEncoder(private val context: Context) : IGifEncoder {
         withContext(Dispatchers.IO) {
             file.createNewFile()
         }
-
         val convertJobTime = System.currentTimeMillis()
         gifEncoder.init(
             width,
@@ -38,13 +37,8 @@ class NdkGifEncoder(private val context: Context) : IGifEncoder {
             file.absolutePath,
             GifEncoder.EncodingType.ENCODING_TYPE_FAST
         )
-       // var prevJob = System.currentTimeMillis()
         frames.forEachIndexed { i, it ->
             gifEncoder.encodeFrame(it, 1000 / config.mFrameRate)
-            /*Log.e(
-                "$TAG, frame:($i/${frames.size})", (System.currentTimeMillis() - prevJob).toString()
-            )*/
-           // prevJob = System.currentTimeMillis()
         }
         Log.e(TAG, (System.currentTimeMillis() - convertJobTime).toString())
         gifEncoder.close()

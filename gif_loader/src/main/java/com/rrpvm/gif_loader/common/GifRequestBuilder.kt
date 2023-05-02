@@ -8,7 +8,9 @@ import com.rrpvm.gif_loader.domain.entity.*
 import com.rrpvm.gif_loader.domain.model.GifModel
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import com.rrpvm.gif_loader.domain.repository.IGifCacheRepository
+import com.rrpvm.gif_loader.domain.utillities.PathFinder.getMyCacheDir
 import kotlinx.coroutines.*
+import java.io.File
 
 class GifRequestBuilder(
     private val context: Context,
@@ -92,14 +94,18 @@ class GifRequestBuilder(
         }
         val jobId = "${videoGifSource}_${gifParameters.hashCode()}"
         val fetchJob = CoroutineScope(Dispatchers.IO).launch {
+            var deleteCallback = {}
             try {
-                val videoData =
-                    gifVideoSourceRetriever.getVideoSource(cacheStrategy) ?: return@launch
                 val cache = cacheRepository.getCache(videoGifSource, gifParameters)
                 if (cache == null || isNeedFullLoad()) {
+                    val videoSource =
+                        gifVideoSourceRetriever.getVideoSource(cacheStrategy) ?: return@launch
+                    deleteCallback = {
+                        File(videoSource).delete()
+                    }
                     //hard-work
                     val gif = withContext(this.coroutineContext + Dispatchers.Default) {
-                        gifWriter.writeVideoToGif(context, videoData, gifParameters)
+                        gifWriter.writeVideoToGif(context, videoSource, gifParameters)
                     } ?: return@launch
                     val model = GifModel(
                         mGifData = gif,
@@ -117,10 +123,12 @@ class GifRequestBuilder(
                     workManager.getJobResource<ByteArray>(jobNameId = jobId)
                         .submit(SharedResourceState(cache.mGifData))
                 }
-                workManager.onJobFinal(videoGifSource)
+                workManager.onJobFinal(jobId)
             } catch (exception: Exception) {
                 onError?.onResourceLoadError(exception)
                 return@launch
+            } finally {
+                deleteCallback.invoke()//clear tmp file
             }
         }
         workManager.onJobStart(jobId, fetchJob)

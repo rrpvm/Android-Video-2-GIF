@@ -19,20 +19,15 @@ class DefaultGifWriter(
     private val gifEncoder: IGifEncoder,
 ) : IGifModelWriter {
     override suspend fun writeVideoToGif(
-        context: Context, pVideoData: ByteArray, params: GifParameters
+        context: Context, pVideoSource: String, params: GifParameters
     ): ByteArray? {
-        val tmpFile = File(context.cacheDir, "${UUID.nameUUIDFromBytes(pVideoData)}_tmp")
-        DataOutputStream(tmpFile.outputStream()).use { it.write(pVideoData) }
         val framesArray = params.mGifTime?.let {
-            videoFramesRetriever.getVideoFramesInTime(tmpFile, it)
-        } ?: videoFramesRetriever.getVideoFrames(tmpFile, params.mFrameCount) ?: return null
+            videoFramesRetriever.getVideoFramesInTime(pVideoSource, it)
+        } ?: videoFramesRetriever.getVideoFrames(pVideoSource, params.mFrameCount) ?: return null
 
         val processedFrames = framesArray.map {
             videoPostProcessor.convert(it, params.mResolution)
         }
         return gifEncoder.encodeGif(ArrayList(processedFrames), params)
-            .also {
-                tmpFile.delete()
-            }
     }
 }

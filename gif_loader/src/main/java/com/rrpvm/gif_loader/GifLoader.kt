@@ -10,6 +10,8 @@ import com.rrpvm.gif_loader.data.factory.gif_cache_repository.IGifCacheRepositor
 import com.rrpvm.gif_loader.data.factory.gif_cache_repository.IGifCacheRepositoryFactoryType
 import kotlinx.coroutines.Job
 
+const val SV_MAX_FILE_SIZE = 1024 * 1024 * 64//64MB
+
 class GifLoader private constructor() {
     companion object {
         private val jobManager = GifRequestManager()

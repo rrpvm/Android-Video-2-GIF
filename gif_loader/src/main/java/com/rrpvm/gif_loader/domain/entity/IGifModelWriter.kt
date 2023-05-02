@@ -6,7 +6,7 @@ import com.rrpvm.gif_loader.domain.model.GifParameters
 interface IGifModelWriter {
     suspend fun writeVideoToGif(
         context: Context,
-        pVideoData: ByteArray,
+        pVideoSource: String,
         params: GifParameters,
     ) : ByteArray?
 }

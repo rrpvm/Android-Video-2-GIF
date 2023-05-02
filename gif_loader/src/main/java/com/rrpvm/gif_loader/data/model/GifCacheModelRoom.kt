@@ -5,6 +5,7 @@ import androidx.room.*
 import com.rrpvm.gif_loader.domain.model.GifCacheDescription
 import com.rrpvm.gif_loader.domain.model.GifModel
 import java.io.File
+import java.io.FileNotFoundException
 
 @Keep
 @Entity(tableName = DB_NAME)
@@ -35,19 +36,15 @@ data class GifCacheModelRoom(
         mCreatedAt = mCreatedAt
     )
 
-    fun toDomain(): GifModel? {
-        try {
-            return GifModel(
-                mGifData = File(mSourcePath).inputStream().readBytes(),
-                mOriginSource = mName,
-                mCacheSize = mSize,
-                mParamHashcode = mParamHashcode,
-                mCreatedAt = mCreatedAt
-            )
-        } catch (e: NullPointerException) {
-            e.printStackTrace()
-        }
-        return null
+    @kotlin.jvm.Throws(FileNotFoundException::class)
+    fun toDomain(): GifModel {
+        return GifModel(
+            mGifData = File(mSourcePath).inputStream().readBytes(),
+            mOriginSource = mName,
+            mCacheSize = mSize,
+            mParamHashcode = mParamHashcode,
+            mCreatedAt = mCreatedAt
+        )
     }
 
     fun toDomainDescription(): GifCacheDescription {

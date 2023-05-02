@@ -2,7 +2,6 @@ package com.rrpvm.gif_loader.common
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.rrpvm.gif_loader.domain.entity.IVideoFramesPostProcessor
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import java.io.ByteArrayOutputStream
@@ -12,16 +11,10 @@ private const val DEFAULT_QUALITY_BOS = 50
 class DefaultFramesPostProcessor : IVideoFramesPostProcessor {
     private val TAG = ":DefaultFramesPostProcessor"
     override suspend fun convert(frame: Bitmap, resolution: GifParameters.GifResolution): Bitmap {
-        val start = System.currentTimeMillis()
-        val result = decodeSampledBitmapWithConfig(
+        return decodeSampledBitmapWithConfig(
             frame, resolution.maxSize,
             resolution.maxSize
         )
-        Log.e(
-            TAG,
-            "frame(${frame.width}/${frame.height}) processed by (${System.currentTimeMillis() - start}) ms"
-        )
-        return result
     }
 }
 

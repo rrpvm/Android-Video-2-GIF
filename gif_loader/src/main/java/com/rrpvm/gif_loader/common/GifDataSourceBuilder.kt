@@ -3,9 +3,7 @@ package com.rrpvm.gif_loader.common
 import android.content.Context
 import com.rrpvm.gif_loader.common.data_source.HttpDataSource
 import com.rrpvm.gif_loader.common.data_source.LocalFileDataSource
-import com.rrpvm.gif_loader.domain.entity.IGifDataSource
 import com.rrpvm.gif_loader.domain.repository.IGifCacheRepository
-import java.net.URL
 
 
 class GifDataSourceBuilder(
@@ -17,7 +15,7 @@ class GifDataSourceBuilder(
         return GifRequestBuilder(
             context,
             videoGifSource = url,
-            HttpDataSource(url),
+            HttpDataSource(url, context),
             cacheRepository = repository,
             workManager = workManager
         )

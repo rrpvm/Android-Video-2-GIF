@@ -8,22 +8,23 @@ import androidx.annotation.RequiresApi
 import com.rrpvm.gif_loader.domain.entity.IVideoFramesRetriever
 //import wseemann.media.FFmpegMediaMetadataRetriever
 import java.io.File
+import java.io.IOException
 
 class DefaultVideoFramesRetriever : IVideoFramesRetriever {
 
     @RequiresApi(Build.VERSION_CODES.P)
     override suspend fun getVideoFrames(
-        source: File,
+        source: String,
         frames: Int,
     ): ArrayList<Bitmap>? {
-        return kotlin.runCatching {
+        val result = kotlin.runCatching {
             val start = System.currentTimeMillis()
             val mmRetriever = MediaMetadataRetriever().apply {
-                setDataSource(source.path)
+                setDataSource(source)
             }
             val numFrames: Int =
                 mmRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_FRAME_COUNT)
-                    ?.toInt() ?: return null
+                    ?.toInt() ?: throw IllegalArgumentException()
 
             return ArrayList(
                 mmRetriever.getFramesAtIndex(
@@ -39,17 +40,19 @@ class DefaultVideoFramesRetriever : IVideoFramesRetriever {
                     "${System.currentTimeMillis() - start} <- getVideoFrames with FFmpegMediaMetadataRetriever"
                 )
             }
-        }.getOrNull()
+        }
+        result.exceptionOrNull()?.printStackTrace()
+        return result.getOrNull()
     }
 
     override suspend fun getVideoFramesInTime(
-        source: File,
+        source: String,
         millisToTakeForVideo: Int
     ): ArrayList<Bitmap>? {
         return kotlin.runCatching {
             val start = System.currentTimeMillis()
             val ffmpeg = MediaMetadataRetriever().apply {
-                setDataSource(source.path)
+                setDataSource(source)
             }
             /* val ffmpeg = FFmpegMediaMetadataRetriever().apply {
                  this.setDataSource(source.path)

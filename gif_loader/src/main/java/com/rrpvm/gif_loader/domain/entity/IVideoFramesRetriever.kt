@@ -5,11 +5,11 @@ import java.io.File
 
 interface IVideoFramesRetriever {
     suspend fun getVideoFrames(
-        source : File,
+        source : String,
         frames: Int,
     ): ArrayList<Bitmap>?
     suspend fun getVideoFramesInTime(
-        source : File,
+        source : String,
         millisToTakeForVideo: Int,
     ): ArrayList<Bitmap>?
 }

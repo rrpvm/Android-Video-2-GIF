@@ -10,6 +10,7 @@ import com.rrpvm.gif_loader.domain.model.GifModel
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import com.rrpvm.gif_loader.domain.repository.IGifCacheRepository
 import java.io.File
+import java.io.FileNotFoundException
 
 class GifCacheRoomRepositoryImpl(
     private val roomDao: CacheDbRoomDao,
@@ -48,7 +49,18 @@ class GifCacheRoomRepositoryImpl(
     }
 
     override fun getCache(name: String, parameters: GifParameters): GifModel? {
-        return roomDao.getGifCache(name, parameters.hashCode())?.toDomain()
+        val qResult = roomDao.getGifCache(name, parameters.hashCode())
+        val result = kotlin.runCatching {
+            qResult?.toDomain()
+        }
+        if (result.isFailure) {
+            if (result.exceptionOrNull() is FileNotFoundException) {
+                qResult?.let {
+                    removeCache(listOf(it.toDomainDescription()))
+                }
+            }
+        }
+        return result.getOrNull()
     }
 
     override fun deleteCache(name: String) {
@@ -77,6 +89,6 @@ class GifCacheRoomRepositoryImpl(
 
     override fun addCacheToolManager(toolManager: ICacheToolManager) {
         this.toolManager = toolManager
-      //  toolManager.onReset(this)
+        //  toolManager.onReset(this)
     }
 }

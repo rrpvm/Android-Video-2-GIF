@@ -9,6 +9,7 @@ import com.rrpvm.gif_loader.domain.model.GifCacheDescription
 import com.rrpvm.gif_loader.domain.repository.IGifCacheRepository
 import kotlinx.coroutines.*
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
@@ -36,8 +37,12 @@ class DefaultCacheManager(
             saveActualCacheSize()
             Log.e(TAG, "new size : ${newLength / 1024.0 / 1024.0}")
         } catch (e: Exception) {
-            e.printStackTrace()
-            saveActualCacheSize()
+            if (e is FileNotFoundException) {
+                saveActualCacheSize()
+                onAddCache(repo, cacheSize)
+            } else {
+                e.printStackTrace()
+            }
         }
     }
 

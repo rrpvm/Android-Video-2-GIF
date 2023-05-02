@@ -8,8 +8,6 @@ import com.rrpvm.gif_loader.domain.entity.IGifModelWriter
 import com.rrpvm.gif_loader.domain.entity.IVideoFramesPostProcessor
 import com.rrpvm.gif_loader.domain.entity.IVideoFramesRetriever
 import com.rrpvm.gif_loader.domain.model.GifParameters
-import java.io.DataOutputStream
-import java.io.File
 import java.util.*
 
 class CircularReverseGifWriter(
@@ -18,21 +16,17 @@ class CircularReverseGifWriter(
     private val gifEncoder: IGifEncoder,
 ) : IGifModelWriter {
     override suspend fun writeVideoToGif(
-        context: Context, pVideoData: ByteArray, params: GifParameters
+        context: Context, pVideoSource: String, params: GifParameters
     ): ByteArray? {
-        val tmpFile = File(context.cacheDir, "${UUID.nameUUIDFromBytes(pVideoData)}_tmp")
-        DataOutputStream(tmpFile.outputStream()).use { it.write(pVideoData) }
         val framesArray = params.mGifTime?.let {
-            videoFramesRetriever.getVideoFramesInTime(tmpFile, it)
-        } ?: videoFramesRetriever.getVideoFrames(tmpFile, params.mFrameCount) ?: return null
+            videoFramesRetriever.getVideoFramesInTime(pVideoSource, it)
+        } ?: videoFramesRetriever.getVideoFrames(pVideoSource, params.mFrameCount) ?: return null
 
         val processedFrames = framesArray.map {
             videoPostProcessor.convert(it, params.mResolution)
         }
+        framesArray.clear()
         val allFrames = processedFrames.plus(processedFrames.reversed())
         return gifEncoder.encodeGif(ArrayList(allFrames), params)
-            .also {
-                tmpFile.delete()
-            }
     }
 }
