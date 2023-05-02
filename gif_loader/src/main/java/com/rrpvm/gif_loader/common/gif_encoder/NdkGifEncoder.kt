@@ -38,13 +38,13 @@ class NdkGifEncoder(private val context: Context) : IGifEncoder {
             file.absolutePath,
             GifEncoder.EncodingType.ENCODING_TYPE_FAST
         )
-        var prevJob = System.currentTimeMillis()
+       // var prevJob = System.currentTimeMillis()
         frames.forEachIndexed { i, it ->
             gifEncoder.encodeFrame(it, 1000 / config.mFrameRate)
-            Log.e(
+            /*Log.e(
                 "$TAG, frame:($i/${frames.size})", (System.currentTimeMillis() - prevJob).toString()
-            )
-            prevJob = System.currentTimeMillis()
+            )*/
+           // prevJob = System.currentTimeMillis()
         }
         Log.e(TAG, (System.currentTimeMillis() - convertJobTime).toString())
         gifEncoder.close()

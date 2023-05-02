@@ -80,7 +80,7 @@ class GifRequestBuilder(
         }
     }
 
-    fun loadInto(vInto: (ByteArray) -> Unit) {
+    fun loadInto(vInto: (ByteArray) -> Unit): Job {
         val result = object : SharedResourceSubscriber<ByteArray>() {
             override fun onResourceSuccess(data: ByteArray) {
                 vInto.invoke(data)
@@ -125,6 +125,7 @@ class GifRequestBuilder(
         }
         workManager.onJobStart(jobId, fetchJob)
         workManager.getJobResource<ByteArray>(jobId).addObserver(result)
+        return fetchJob
     }
 
     private fun isNeedFullLoad(): Boolean {

@@ -27,4 +27,17 @@ class GifRequestManager {
         rsMap.remove(jobNameId)
     }
 
+    fun deleteJob(job: Job) {
+        var jobName: String? = null
+        jobMap.forEach { name, workJob ->
+            if (workJob == job) {
+                jobName = name
+            }
+        }
+        job.cancel()
+        rsMap[jobName ?: return]?.clear()
+        rsMap.remove(jobName ?: return)
+        jobMap.remove(jobName ?: return)
+    }
+
 }

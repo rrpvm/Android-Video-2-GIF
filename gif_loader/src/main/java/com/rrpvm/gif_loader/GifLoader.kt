@@ -8,6 +8,7 @@ import com.rrpvm.gif_loader.data.factory.cache_selector.DEFAULT_CACHE_SELECTOR_F
 import com.rrpvm.gif_loader.data.factory.gif_cache_repository.DefaultGifCacheRepositoryFactory
 import com.rrpvm.gif_loader.data.factory.gif_cache_repository.IGifCacheRepositoryFactory
 import com.rrpvm.gif_loader.data.factory.gif_cache_repository.IGifCacheRepositoryFactoryType
+import kotlinx.coroutines.Job
 
 class GifLoader private constructor() {
     companion object {
@@ -38,6 +39,10 @@ class GifLoader private constructor() {
                     )
                 }, jobManager
             )
+        }
+
+        fun clearTask(job: Job) {
+            jobManager.deleteJob(job)
         }
     }
 }
