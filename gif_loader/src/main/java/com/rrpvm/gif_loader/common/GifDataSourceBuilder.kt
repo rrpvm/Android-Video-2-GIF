@@ -27,7 +27,7 @@ class GifDataSourceBuilder(
         return GifRequestBuilder(
             context,
             videoGifSource = localPath,
-            LocalFileDataSource(localPath),
+            LocalFileDataSource(localPath, context),
             cacheRepository = repository,
             workManager = workManager
         )
