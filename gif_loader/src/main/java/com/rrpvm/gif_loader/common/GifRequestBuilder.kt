@@ -19,7 +19,7 @@ class GifRequestBuilder(
     private val cacheRepository: IGifCacheRepository,
     private val workManager: GifRequestManager,
 ) {
-    private var gifWriter: IGifModelWriter = DefaultGifWriter(gifEncoder = NdkGifEncoder(context))
+    private var gifWriter: IGifModelWriter = DefaultGifWriter()
     private var gifParameters: GifParameters = GifParameters()
     private var cacheStrategy: GifLoaderRequestCacheStrategy =
         GifLoaderRequestCacheStrategy.CACHE_ONLY_GIF
@@ -93,6 +93,7 @@ class GifRequestBuilder(
             }
         }
         val jobId = "${videoGifSource}_${gifParameters.hashCode()}"
+        Log.e("rrpvm", "started job with uri: $jobId")
         val fetchJob = CoroutineScope(Dispatchers.IO).launch {
             var deleteCallback = {}
             try {

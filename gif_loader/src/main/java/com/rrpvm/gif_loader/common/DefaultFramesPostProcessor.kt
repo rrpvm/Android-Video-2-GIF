@@ -12,8 +12,8 @@ class DefaultFramesPostProcessor : IVideoFramesPostProcessor {
     private val TAG = ":DefaultFramesPostProcessor"
     override suspend fun convert(frame: Bitmap, resolution: GifParameters.GifResolution): Bitmap {
         return decodeSampledBitmapWithConfig(
-            frame, resolution.maxSize,
-            resolution.maxSize
+            frame, resolution.getWidth(),
+            resolution.getHeight()
         )
     }
 }

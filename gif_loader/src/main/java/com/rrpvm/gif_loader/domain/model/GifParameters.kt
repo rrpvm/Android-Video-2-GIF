@@ -16,9 +16,21 @@ data class GifParameters(
     val mResolution: GifResolution = GifResolution.LOW,
     val mGifTime: Int? = null,
 ) {
-    enum class GifResolution(val maxSize: Int) {
-        LOW(144), MEDIUM(260), HIGH(360), ULTRA(720)
+    enum class GifResolution(private val height: Int) {
         //ultra - super high resolution for gif, no sense
+        LOW(144), MEDIUM(240), HIGH(320), ULTRA(480), ULTRA_HD(720);
+
+        fun getWidth(): Int {
+            return height / 16 * 9
+        }
+
+        fun getHeight(): Int {
+            return height
+        }
+
+        val hashcode: Int
+            get() = getHeight().hashCode() + getWidth().hashCode()
+
     }
 
     override fun equals(other: Any?): Boolean {
@@ -43,7 +55,7 @@ data class GifParameters(
         mGifTime?.run {
             result = 31 * result + this
         }
-        result = 31 * result + mResolution.maxSize.hashCode()
+        result = 31 * result + mResolution.hashcode
         return result
     }
 

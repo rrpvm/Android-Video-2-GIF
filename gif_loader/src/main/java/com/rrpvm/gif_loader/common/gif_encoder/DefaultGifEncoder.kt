@@ -6,12 +6,14 @@ import com.rrpvm.gif_loader.domain.entity.IGifEncoder
 import com.rrpvm.gif_loader.domain.model.GifParameters
 import com.rrpvm.gif_loader.domain.utillities.AnimatedGifEncoder
 import java.io.ByteArrayOutputStream
+import java.io.File
 
 class DefaultGifEncoder : IGifEncoder {
     private val TAG = ":DefaultGifEncoder"
     override suspend fun encodeGif(
         frames: ArrayList<Bitmap>,
-        config: GifParameters
+        config: GifParameters,
+        fileCreator: (String) -> File
     ): ByteArray? {
         val bos = ByteArrayOutputStream()
         val gifEncoder = AnimatedGifEncoder()
