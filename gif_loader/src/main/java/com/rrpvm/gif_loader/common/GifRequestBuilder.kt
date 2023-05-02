@@ -115,8 +115,10 @@ class GifRequestBuilder(
                         gifParameters.hashCode(),
                         mCreatedAt = System.currentTimeMillis()
                     )
-                    this.launch {
-                        cacheRepository.putCache(model)
+                    if (!isNeedFullLoad()) {
+                        this.launch {
+                            cacheRepository.putCache(model)
+                        }
                     }
                     workManager.getJobResource<ByteArray>(jobNameId = jobId)
                         .submit(SharedResourceState(gif))
